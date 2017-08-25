@@ -3,7 +3,7 @@ var MyMongodbClient = require('my-mongodb-client')
 var myClient = new MyMongodbClient('mongodb://localhost:27017/lost-children')
 // process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
 
-var curId = 2150 //curId需要从目前微博的
+var curId = 2156 //curId需要从目前微博的
 
 var fetchLostChildren = function (lostId) {
   var options = {
@@ -113,7 +113,12 @@ var fetchLostChildren = function (lostId) {
 var fetchLostChildrenResult = function() {
   myClient.find('lost', {result: {$exists: false}}).then(function(result){
     for (var i in result) {
-      console.log(result[i].lost_id)
+      // console.log(result[i].lost_id)
+      (function(index){
+        setTimeout(function(){
+          fetchLostData(result[index].lost_id)
+        }, index*1000)
+      })(i)
     }
   }, function(error){
     console.log(error)
@@ -123,7 +128,7 @@ var fetchLostChildrenResult = function() {
 var fetchLostData = function (lostId) {
   var options = {
     method: 'GET',
-    url: 'https://m.weibo.cn/api/container/getIndex?containerid=231038' + lostId,
+    url: 'https://m.weibo.cn/api/container/getIndex?containerid=' + lostId,
     rejectUnauthorized: false,
     proxy: 'http://127.0.0.1:8087',
     json: true,
@@ -202,15 +207,12 @@ var fetchLostData = function (lostId) {
         }
       }
       // console.log(result)
-      result.lost_id = parseInt('231038' + lostId)
+      result.lost_id = parseInt(lostId)
       myClient.updateOne('lost', {lost_id: result.lost_id}, result, {upsert: true}).then(function(db_res) {
-        console.log(db_res.result)
+        console.log(lostId + '..........' + db_res.result)
       }, function(db_err){
         console.log(db_err)
       })
-      var index = parseInt(lostId)
-      fetchLostChildren(index + 1)
-      curId = index > curId ? curId : index
     } 
   })
 }

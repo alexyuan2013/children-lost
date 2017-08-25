@@ -7,7 +7,6 @@
 var fetch = require('./src/fetch_lost_children')
 // 第一条 231038-226
 // 最近一年的种子编号 231038-1000
-fetch.fetchLostChildren('1793')
-setTimeout(function() {
-  fetch.fetchLostChildrenResult()
-}, 1000);
+fetch.fetchLostChildren('2156')
+setTimeout(fetch.fetchLostChildrenResult, 1000)
+setInterval(fetch.fetchLostChildrenResult, 600000);
