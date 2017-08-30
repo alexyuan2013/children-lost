@@ -34,7 +34,7 @@ router.get('/test', function(req, res){
   handler.handleTest(req, res)
 })
 
-router.get('/lost_children_lastest', function(req, res){
+router.get('/lost_children_latest', function(req, res){
   handler.handleLostChidren(req, res, 20) // 默认拉取10个
 })
 
